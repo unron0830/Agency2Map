@@ -12,6 +12,7 @@ Agency2Map 以「花蓮馬太鞍溪堰塞湖災後重建」為示範事件，將
 
 - 將災後重建資源整理成 `resource_items` 資料表。
 - 保留每筆資料的來源、日期、原文證據與人工審核狀態。
+- 提供可提問介面，回答必須同步顯示資料來源、日期、證據與穩定性。
 - 依來源、金額、空間、時間與進度明確度計算資料穩定性。
 - 匯出 CSV、JSON、GeoJSON，供 WebGIS、API 或其他防災系統串接。
 - 提供 Streamlit MVP 與 FastAPI prototype。
