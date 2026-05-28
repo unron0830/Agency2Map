@@ -768,7 +768,9 @@
 
       const countWithAmount = state.filtered.filter((f) => amount(f.properties) > 0).length;
       const budgetIntro = special ? `
-        <strong>回答：</strong>馬太鞍災後重建特別預算目前以中央總盤
+        <strong>回答：</strong>${escapeHtml(special.note)}
+        <br>
+        馬太鞍災後重建特別預算目前以中央總盤
         <strong>${escapeHtml(shortMoney(special.approved_amount))}</strong>呈現，特別條例經費上限為
         <strong>${escapeHtml(shortMoney(special.cap_amount))}</strong>，其中
         <strong>${escapeHtml(shortMoney(special.reserved_amount))}</strong>保留後續視需求編列，執行期間為 ${escapeHtml(special.period)}。
