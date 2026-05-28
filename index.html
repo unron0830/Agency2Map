@@ -632,6 +632,8 @@
         <div id="trackingCards" class="track-grid"></div>
         <h3>錢流向與重工檢核</h3>
         <div id="governanceCards"></div>
+        <h3>主要法規依據</h3>
+        <div id="legalBasisCards"></div>
         <h3>各部會金額</h3>
         <div id="ministryTotals"></div>
       </div>
@@ -815,6 +817,16 @@
             <p class="meta">${escapeHtml(state.budget.governance_focus.current_limit)}</p>
           </article>
         `
+        : "";
+
+      document.getElementById("legalBasisCards").innerHTML = state.budget && state.budget.legal_basis
+        ? state.budget.legal_basis.map((law) => `
+          <article class="source-card">
+            <h4><a href="${escapeHtml(law.url)}" target="_blank" rel="noreferrer">${escapeHtml(law.title)}</a></h4>
+            <p class="meta">${escapeHtml(law.authority)}｜公布日：${escapeHtml(law.published_date)}</p>
+            <p>${law.why_it_matters.map((item) => escapeHtml(item)).join("<br>")}</p>
+          </article>
+        `).join("")
         : "";
 
       const allocationCards = state.budget
