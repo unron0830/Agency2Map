@@ -1,0 +1,132 @@
+{
+  "type": "FeatureCollection",
+  "name": "resource_items",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "RES001",
+        "event_id": "mataian_2025",
+        "agency_level": "中央",
+        "ministry": "農業部",
+        "sub_agency": "林業及自然保育署",
+        "program_name": "馬太鞍溪堰塞湖致災情境與防災對策評估",
+        "work_category": "風險分析",
+        "resource_type": "研究",
+        "amount": "0",
+        "amount_unit": "未揭露",
+        "location_text": "馬太鞍溪堰塞湖",
+        "location_type": "河川",
+        "admin_county": "花蓮縣",
+        "admin_town": "光復鄉",
+        "river_basin": "花蓮溪流域",
+        "river_name": "馬太鞍溪",
+        "river_segment": "上游",
+        "spatial_role": "河道",
+        "geometry_type": "point",
+        "status": "執行中",
+        "source_id": "SRC001",
+        "source_title": "馬太鞍溪堰塞湖致災情境與防災對策評估服務建議書",
+        "source_url": "",
+        "source_date": "2026-04-16",
+        "evidence_text": "針對馬太鞍溪堰塞湖致災情境與防災對策進行評估。",
+        "confidence": "高",
+        "stability_score": "8",
+        "reviewer_note": "示範資料，需比對正式公告",
+        "reviewed": "False",
+        "stability_label": "高穩定"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.425,
+          23.65
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "RES002",
+        "event_id": "mataian_2025",
+        "agency_level": "中央",
+        "ministry": "經濟部",
+        "sub_agency": "水利署",
+        "program_name": "花蓮溪治理規劃檢討",
+        "work_category": "河道治理",
+        "resource_type": "工程規劃",
+        "amount": "0",
+        "amount_unit": "未揭露",
+        "location_text": "花蓮溪水系",
+        "location_type": "河川",
+        "admin_county": "花蓮縣",
+        "admin_town": "",
+        "river_basin": "花蓮溪流域",
+        "river_name": "花蓮溪",
+        "river_segment": "下游",
+        "spatial_role": "河道",
+        "geometry_type": "point",
+        "status": "已公告",
+        "source_id": "SRC002",
+        "source_title": "花蓮溪治理規劃檢討工作執行計畫書",
+        "source_url": "",
+        "source_date": "2026-03-28",
+        "evidence_text": "檢討花蓮溪水系治理規劃並提出後續工作方向。",
+        "confidence": "高",
+        "stability_score": "7",
+        "reviewer_note": "示範資料，需補空間範圍",
+        "reviewed": "False",
+        "stability_label": "中穩定"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.48,
+          23.76
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "RES003",
+        "event_id": "mataian_2025",
+        "agency_level": "中央",
+        "ministry": "公共工程委員會",
+        "sub_agency": "",
+        "program_name": "花蓮馬太鞍永續發展整體規劃",
+        "work_category": "地方復原",
+        "resource_type": "委託服務",
+        "amount": "0",
+        "amount_unit": "未揭露",
+        "location_text": "光復鄉及周邊受影響地區",
+        "location_type": "行政區",
+        "admin_county": "花蓮縣",
+        "admin_town": "光復鄉",
+        "river_basin": "花蓮溪流域",
+        "river_name": "馬太鞍溪",
+        "river_segment": "中游",
+        "spatial_role": "聚落",
+        "geometry_type": "point",
+        "status": "待確認",
+        "source_id": "SRC003",
+        "source_title": "花蓮馬太鞍永續發展整體規劃委託專業技術服務案",
+        "source_url": "",
+        "source_date": "2026-04-14",
+        "evidence_text": "規劃災後永續發展與跨域整合。",
+        "confidence": "中",
+        "stability_score": "5",
+        "reviewer_note": "示範資料，需補計畫金額與期程",
+        "reviewed": "False",
+        "stability_label": "中穩定"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.421,
+          23.666
+        ]
+      }
+    }
+  ]
+}

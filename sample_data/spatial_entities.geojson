@@ -1,0 +1,37 @@
+{
+  "type": "FeatureCollection",
+  "name": "spatial_entities",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "spatial_id": "SP001",
+        "event_id": "mataian_2025",
+        "name": "光復鄉",
+        "type": "行政區",
+        "source": "示範資料",
+        "confidence": "中"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.421, 23.666]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "spatial_id": "SP002",
+        "event_id": "mataian_2025",
+        "name": "馬太鞍溪堰塞湖",
+        "type": "河川",
+        "source": "示範資料",
+        "confidence": "低"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [121.425, 23.650]
+      }
+    }
+  ]
+}
+

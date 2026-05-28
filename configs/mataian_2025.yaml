@@ -1,0 +1,37 @@
+event_id: mataian_2025
+event_name: 花蓮馬太鞍溪堰塞湖災後重建
+event_type: dammed_lake_recovery
+
+keywords:
+  - 馬太鞍溪
+  - 堰塞湖
+  - 光復鄉
+  - 花蓮溪
+  - 花蓮災後重建
+  - 特別預算
+  - 清淤
+  - 農地復原
+  - 土砂
+  - 河道治理
+
+target_agencies:
+  - 行政院
+  - 公共工程委員會
+  - 農業部
+  - 林業及自然保育署
+  - 經濟部
+  - 水利署
+  - 第九河川分署
+  - 花蓮縣政府
+
+spatial_layers:
+  - 花蓮縣行政區界
+  - 光復鄉行政區界
+  - 馬太鞍溪河道
+  - 花蓮溪流域
+  - 道路圖層
+  - 農地圖層
+  - 聚落圖層
+
+schema_profile: disaster_recovery_resource
+

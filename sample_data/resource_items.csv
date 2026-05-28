@@ -1,0 +1,5 @@
+id,event_id,agency_level,ministry,sub_agency,program_name,work_category,resource_type,amount,amount_unit,location_text,location_type,admin_county,admin_town,river_basin,river_name,river_segment,spatial_role,geometry_type,longitude,latitude,status,source_id,source_title,source_url,source_date,evidence_text,confidence,stability_score,reviewer_note,reviewed
+RES001,mataian_2025,中央,農業部,林業及自然保育署,馬太鞍溪堰塞湖致災情境與防災對策評估,風險分析,研究,0,未揭露,馬太鞍溪堰塞湖,河川,花蓮縣,光復鄉,花蓮溪流域,馬太鞍溪,上游,河道,point,121.425,23.650,執行中,SRC001,馬太鞍溪堰塞湖致災情境與防災對策評估服務建議書,,2026-04-16,針對馬太鞍溪堰塞湖致災情境與防災對策進行評估。,高,0,示範資料，需比對正式公告,False
+RES002,mataian_2025,中央,經濟部,水利署,花蓮溪治理規劃檢討,河道治理,工程規劃,0,未揭露,花蓮溪水系,河川,花蓮縣,,花蓮溪流域,花蓮溪,下游,河道,point,121.480,23.760,已公告,SRC002,花蓮溪治理規劃檢討工作執行計畫書,,2026-03-28,檢討花蓮溪水系治理規劃並提出後續工作方向。,高,0,示範資料，需補空間範圍,False
+RES003,mataian_2025,中央,公共工程委員會,,花蓮馬太鞍永續發展整體規劃,地方復原,委託服務,0,未揭露,光復鄉及周邊受影響地區,行政區,花蓮縣,光復鄉,花蓮溪流域,馬太鞍溪,中游,聚落,point,121.421,23.666,待確認,SRC003,花蓮馬太鞍永續發展整體規劃委託專業技術服務案,,2026-04-14,規劃災後永續發展與跨域整合。,中,0,示範資料，需補計畫金額與期程,False
+

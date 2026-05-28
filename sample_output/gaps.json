@@ -1,0 +1,15 @@
+[
+  {
+    "event_id": "mataian_2025",
+    "gap_type": "missing_amount",
+    "description": "示範資料中多筆資源尚未揭露或尚未整理金額。",
+    "suggested_action": "回查正式預算書、採購公告或補助核定文件。"
+  },
+  {
+    "event_id": "mataian_2025",
+    "gap_type": "missing_geometry",
+    "description": "部分計畫僅有行政區或河川名稱，缺少明確座標或範圍。",
+    "suggested_action": "以人工審核或 GIS 圖資補上 point、line 或 polygon。"
+  }
+]
+
