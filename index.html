@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agency2Map - 跨部會資源投入追蹤與空間化治理元件</title>
+  <title>Agency2Map - 馬太鞍跨部會資源案件搜尋系統</title>
   <style>
     :root {
       --bg: #eef4ee;
@@ -407,6 +407,99 @@
       font-size: 13px;
     }
 
+    .search-system {
+      margin: 14px 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f8fbf7;
+      overflow: hidden;
+    }
+
+    .search-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: #edf5ef;
+    }
+
+    .search-head h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .case-layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.86fr) minmax(360px, 1.14fr);
+      min-height: 520px;
+    }
+
+    .case-list {
+      border-right: 1px solid var(--line);
+      background: #fff;
+      max-height: 620px;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      background: #fff;
+    }
+
+    .case-card:hover,
+    .case-card.active {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(15, 107, 82, 0.1);
+    }
+
+    .case-card h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .case-card p {
+      margin: 4px 0;
+    }
+
+    .case-detail {
+      padding: 14px;
+      background: #fbfdf9;
+    }
+
+    .case-detail h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .detail-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .detail-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
     .meta {
       color: var(--muted);
       font-size: 12px;
@@ -536,9 +629,16 @@
 
       .summary-grid,
       .track-grid,
+      .case-layout,
+      .detail-grid,
       .filters,
       .chat-row {
         grid-template-columns: 1fr;
+      }
+
+      .case-list {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
       }
     }
   </style>
@@ -547,8 +647,8 @@
   <header>
     <div class="hero-inner">
       <div class="eyebrow">MATAIAN GOVERNANCE DECISION PLATFORM</div>
-      <h1>跨部會資源投入追蹤與 RAG 自動回覆元件</h1>
-      <p>以馬太鞍溪堰塞湖災後重建為示範場域，把特別預算、部會計畫、地方執行與公開來源串成可查詢、可追溯、可監督的 RAG 回答介面。</p>
+      <h1>馬太鞍跨部會資源案件搜尋系統</h1>
+      <p>以馬太鞍溪堰塞湖災後重建為示範場域，把特別預算、部會計畫、地方執行與公開來源整理成可搜尋、可篩選、可追溯的 RAG 回答介面。</p>
       <div class="hero-actions">
         <a href="#system">進入系統</a>
         <a href="#capabilities" class="secondary">查看平台能力</a>
@@ -611,6 +711,17 @@
           <select id="pubFilter"></select>
         </div>
       </div>
+
+      <section class="search-system" aria-label="案件搜尋系統">
+        <div class="search-head">
+          <h2>案件搜尋結果</h2>
+          <span class="tag public" id="resultCount">搜尋結果 0 件</span>
+        </div>
+        <div class="case-layout">
+          <div class="case-list" id="caseList"></div>
+          <div class="case-detail" id="caseDetail">系統正在載入案件。</div>
+        </div>
+      </section>
 
       <div class="tabs">
         <button class="tab active" type="button" data-tab="answer">回答成果</button>
@@ -730,6 +841,9 @@
         && passes(feature, "work_category", "workFilter")
         && passes(feature, "publication_status", "pubFilter")
       );
+      if (!state.filtered.some((feature) => feature.properties.id === state.selectedId)) {
+        state.selectedId = state.filtered[0] ? state.filtered[0].properties.id : null;
+      }
       renderAll();
     }
 
@@ -840,6 +954,61 @@
           </div>
         `).join("");
       document.getElementById("ministryTotals").innerHTML = allocationCards + gisCards;
+    }
+
+    function selectedFeature() {
+      return state.filtered.find((feature) => feature.properties.id === state.selectedId) || state.filtered[0] || null;
+    }
+
+    function renderCaseBrowser() {
+      document.getElementById("resultCount").textContent = `搜尋結果 ${state.filtered.length.toLocaleString("zh-TW")} 件`;
+      document.getElementById("caseList").innerHTML = state.filtered.map((feature) => {
+        const p = feature.properties;
+        return `
+          <article class="case-card ${state.selectedId === p.id ? "active" : ""}" data-id="${escapeHtml(p.id)}">
+            <h4>${escapeHtml(p.program_name)}</h4>
+            <p>
+              <span class="tag">${escapeHtml(p.ministry)}</span>
+              <span class="tag">${escapeHtml(p.work_category)}</span>
+              <span class="tag ${p.publication_status === "private_reference" ? "private" : "public"}">${escapeHtml(p.publication_status)}</span>
+            </p>
+            <p class="meta">${escapeHtml(p.location_text)}</p>
+          </article>
+        `;
+      }).join("") || `<article class="case-card"><h4>沒有符合條件的案件</h4><p class="meta">請放寬篩選條件。</p></article>`;
+
+      document.querySelectorAll("#caseList .case-card[data-id]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.selectedId = card.dataset.id;
+          renderCaseBrowser();
+          renderPlans();
+        });
+      });
+
+      const feature = selectedFeature();
+      if (!feature) {
+        document.getElementById("caseDetail").innerHTML = "沒有可顯示的案件。";
+        return;
+      }
+
+      const p = feature.properties;
+      document.getElementById("caseDetail").innerHTML = `
+        <h3>${escapeHtml(p.program_name)}</h3>
+        <p>
+          <span class="tag">${escapeHtml(p.ministry)}</span>
+          ${p.sub_agency ? `<span class="tag">${escapeHtml(p.sub_agency)}</span>` : ""}
+          <span class="tag">${escapeHtml(p.work_category)}</span>
+          <span class="tag money">${escapeHtml(money(amount(p)))}</span>
+        </p>
+        <div class="detail-grid">
+          <div class="detail-item"><span>標案/計畫單位</span>${escapeHtml(p.ministry)}${p.sub_agency ? `／${escapeHtml(p.sub_agency)}` : ""}</div>
+          <div class="detail-item"><span>公開狀態</span>${escapeHtml(p.publication_status)}</div>
+          <div class="detail-item"><span>位置/範圍</span>${escapeHtml(p.location_text)}</div>
+          <div class="detail-item"><span>資料穩定性</span>${escapeHtml(p.stability_label || p.stability_score)}</div>
+        </div>
+        <p><strong>工項摘要：</strong>${escapeHtml(p.evidence_text)}</p>
+        <p class="meta"><strong>來源：</strong>${escapeHtml(p.source_title || p.source_id)}｜日期：${escapeHtml(p.source_date)}｜${escapeHtml(p.reviewer_note)}</p>
+      `;
     }
 
     function renderPlans() {
@@ -974,6 +1143,7 @@
 
     function renderAll() {
       renderAnswer(document.getElementById("questionInput").value);
+      renderCaseBrowser();
       renderPlans();
       renderSources();
       renderTable();
