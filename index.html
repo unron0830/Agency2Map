@@ -875,6 +875,9 @@
             <h4>${escapeHtml(p.source_title || p.source_id)}</h4>
             <p>${escapeHtml(p.evidence_text)}</p>
             <p class="meta">
+              標案/計畫單位：${escapeHtml(p.ministry)}${p.sub_agency ? `／${escapeHtml(p.sub_agency)}` : ""}
+              ｜工作類型：${escapeHtml(p.work_category)}
+              <br>
               來源 ID：${escapeHtml(p.source_id)}
               ｜日期：${escapeHtml(p.source_date)}
               ｜公開狀態：${escapeHtml(p.publication_status)}
@@ -886,7 +889,7 @@
       }).join("") + (state.budget ? state.budget.sources.map((source) => `
         <article class="source-card">
           <h4>${escapeHtml(source.title)}</h4>
-          <p class="meta">日期：${escapeHtml(source.date)}｜公開來源：總預算、部會分配與地方執行摘要</p>
+          <p class="meta">來源單位：${escapeHtml(source.agency || "待補")}｜日期：${escapeHtml(source.date)}｜公開來源：總預算、部會分配與地方執行摘要</p>
           <p><a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">開啟來源</a></p>
         </article>
       `).join("") : "");
