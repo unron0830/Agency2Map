@@ -827,6 +827,7 @@
             <h4>${escapeHtml(item.agency)}</h4>
             <p><span class="tag money">${escapeHtml(shortMoney(item.amount))}</span></p>
             <p class="meta">${escapeHtml(item.scope)}</p>
+            <p class="meta"><strong>來源依據：</strong>${escapeHtml(item.source_basis || "待補")}</p>
           </div>
         `).join("")
         : "";
