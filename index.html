@@ -702,7 +702,11 @@
     const money = (value) => value ? `新臺幣 ${Math.round(value).toLocaleString("zh-TW")} 元` : "金額未揭露";
     const shortMoney = (value) => {
       if (!value) return "待補";
-      if (value >= 100000000) return `${Math.round(value / 100000000).toLocaleString("zh-TW")} 億`;
+      if (value >= 100000000) {
+        const yi = value / 100000000;
+        const display = yi >= 10 ? Math.round(yi).toLocaleString("zh-TW") : yi.toLocaleString("zh-TW", { maximumFractionDigits: 2 });
+        return `${display} 億`;
+      }
       return `${Math.round(value / 10000).toLocaleString("zh-TW")} 萬`;
     };
     const escapeHtml = (value) => text(value)
