@@ -19,3 +19,15 @@ AI is used as a bounded assistant for evidence extraction and structured data pr
 - 保留人工審核機制。
 - AI 輸出只是初稿，不能取代正式機關資料或專業判斷。
 
+## Data Boundary
+
+Public web sources and public government tender documents may be indexed, summarized, and committed when redistribution is lawful. Local non-public reports may be used only in local/private workflows. Do not publish their full text, figures, maps, screenshots, scanned pages, or generated chunks.
+
+For private documents, the system should publish only reviewed derivatives such as:
+
+- source title and agency
+- public URL if one exists
+- high-level work category
+- amount, scope, and location metadata when disclosure is allowed
+- generalized or independently created GeoJSON geometry
+- evidence notes that do not reproduce restricted report content

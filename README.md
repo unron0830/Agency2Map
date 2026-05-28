@@ -15,6 +15,7 @@ Agency2Map 以「花蓮馬太鞍溪堰塞湖災後重建」為示範事件，將
 - 依來源、金額、空間、時間與進度明確度計算資料穩定性。
 - 匯出 CSV、JSON、GeoJSON，供 WebGIS、API 或其他防災系統串接。
 - 提供 Streamlit MVP 與 FastAPI prototype。
+- 支援公開邀標文件與本機私有報告書分流，避免非公開內文或圖資誤上傳。
 
 ## Demo Event
 
@@ -82,3 +83,24 @@ GET /api/events/mataian_2025/resources?river_segment=下游
 
 AI is used as an evidence extraction and structuring assistant. It may classify documents, identify agencies and resource items, suggest spatial meanings, and summarize gaps. It must not create unsupported conclusions. Each important extracted item keeps its source, date, evidence text, confidence, and review state.
 
+## Data Publication Policy
+
+可公開放入 GitHub：
+
+- 網路上可搜尋到的政府公開資料
+- 政府公開邀標文件、採購公告、服務建議書公開附件
+- 可公開的計畫金額、工項、服務範圍、機關與公告資訊
+- 經人工整理後的 CSV、JSON、GeoJSON 與摘要 metadata
+
+不可公開放入 GitHub：
+
+- 本機非公開成果報告書全文
+- 報告書內文截圖、地圖、圖表、照片或掃描頁
+- 未確認授權的 PDF、內部審查資料、個資或限制性附件
+
+資料分區：
+
+- `data/public_tenders/`: 可公開邀標與採購文件。
+- `data/private_docs/`: 本機私有文件，只保留 README 進版控。
+- `data/local_index/`: 本機 RAG 索引，只保留 README 進版控。
+- `sample_data/` and `sample_output/`: 可公開展示的結構化示範資料與輸出。

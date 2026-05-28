@@ -4,4 +4,7 @@ __pycache__/
 venv/
 .env
 .streamlit/secrets.toml
-
+data/private_docs/*
+!data/private_docs/README.md
+data/local_index/*
+!data/local_index/README.md
