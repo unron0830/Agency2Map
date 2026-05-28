@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agency2Map - 馬太鞍公部門資源檢索</title>
+  <title>Agency2Map - 跨部會資源投入追蹤與空間化治理元件</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     integrity="sha256-p4NxAoJBhIINfQxv7VSaDD8XdbJ5GN0F0Xw0D1B8fFA=" crossorigin="">
   <style>
@@ -384,6 +384,31 @@
       margin: 5px 0;
     }
 
+    .track-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 0 14px;
+    }
+
+    .track-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .track-card h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .track-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .meta {
       color: var(--muted);
       font-size: 12px;
@@ -512,6 +537,7 @@
       }
 
       .summary-grid,
+      .track-grid,
       .filters,
       .chat-row {
         grid-template-columns: 1fr;
@@ -523,8 +549,8 @@
   <header>
     <div class="hero-inner">
       <div class="eyebrow">MATAIAN GOVERNANCE DECISION PLATFORM</div>
-      <h1>馬太鞍公部門資源 RAG 搜尋與 WebGIS</h1>
-      <p>面向災後重建、跨部會協調與公共監督的空間化治理入口。以對話查詢盤點政府預算、部會計畫、工作範圍與資料來源，並同步定位到 WebGIS。</p>
+      <h1>跨部會資源投入追蹤與空間化治理元件</h1>
+      <p>以馬太鞍溪堰塞湖災後重建為示範場域，把特別預算、部會計畫、地方執行、公開來源與 GIS 位置串成可查詢、可追溯、可監督的治理介面。</p>
       <div class="hero-actions">
         <a href="#system">進入系統</a>
         <a href="#capabilities" class="secondary">查看平台能力</a>
@@ -536,8 +562,8 @@
   <section id="capabilities" class="capability-strip" aria-label="平台核心能力">
     <div class="capability">
       <span>Core</span>
-      <strong>對話式治理查詢</strong>
-      <p>以自然語言詢問「花多少、誰在做、做在哪裡」。</p>
+      <strong>跨部會資源追蹤</strong>
+      <p>以自然語言詢問「花多少、哪個部會、哪些地方執行」。</p>
     </div>
     <div class="capability">
       <span>WebGIS</span>
@@ -552,7 +578,7 @@
     <div class="capability">
       <span>Governance</span>
       <strong>跨部會盤點</strong>
-      <p>彙整農業部、水利署、工程會等重建與防災投入。</p>
+      <p>彙整農業部、水利署、衛福部、內政部、地方政府等投入。</p>
     </div>
   </section>
 
@@ -561,14 +587,14 @@
       <div class="chat-box">
         <div class="chat-label">對話式查詢</div>
         <div class="chat-row">
-          <input id="questionInput" value="政府花了多少錢在馬太鞍上" aria-label="輸入問題">
+          <input id="questionInput" value="馬太鞍特別預算總共有多少，消防局、衛生所、農業部輔導有沒有相關預算" aria-label="輸入問題">
           <button id="askButton" type="button">送出查詢</button>
         </div>
         <div class="prompt-buttons">
-          <button type="button" data-prompt="政府花了多少錢在馬太鞍上">政府花多少錢？</button>
+          <button type="button" data-prompt="馬太鞍特別預算總共有多少">特別預算總額</button>
+          <button type="button" data-prompt="消防局、衛生所、農業部輔導有沒有相關預算">消防/衛生/農業</button>
           <button type="button" data-prompt="各部會目前有哪些計畫">各部會計畫</button>
           <button type="button" data-prompt="光復鄉有哪些工作範圍">光復鄉範圍</button>
-          <button type="button" data-prompt="哪些資料需要公開來源佐證">需要佐證資料</button>
         </div>
       </div>
 
@@ -597,10 +623,12 @@
       <div id="answer" class="section active">
         <div id="answerText" class="answer-block">系統正在載入資料。</div>
         <div class="summary-grid">
-          <div class="metric"><span>可計金額合計</span><strong id="metricTotal">0</strong><small>僅計入有金額欄位者</small></div>
-          <div class="metric"><span>涉及部會</span><strong id="metricMinistries">0</strong><small>依目前篩選</small></div>
-          <div class="metric"><span>計畫數</span><strong id="metricPlans">0</strong><small>可點選定位</small></div>
+          <div class="metric"><span>特別預算歲出</span><strong id="metricSpecialTotal">0</strong><small>中央總盤</small></div>
+          <div class="metric"><span>GIS已整理金額</span><strong id="metricTotal">0</strong><small>不與總預算重複加總</small></div>
+          <div class="metric"><span>空間化計畫數</span><strong id="metricPlans">0</strong><small>可點選定位</small></div>
         </div>
+        <h3>重點追蹤項目</h3>
+        <div id="trackingCards" class="track-grid"></div>
         <h3>各部會金額</h3>
         <div id="ministryTotals"></div>
       </div>
@@ -656,6 +684,7 @@
       markers: new Map(),
       layer: L.layerGroup(),
       selectedId: null,
+      budget: null,
     };
 
     const map = L.map("map").setView([23.67, 121.44], 10);
@@ -668,6 +697,11 @@
     const text = (value) => value === undefined || value === null || value === "nan" ? "" : String(value);
     const amount = (p) => Number(text(p.amount).replaceAll(",", "")) || 0;
     const money = (value) => value ? `新臺幣 ${Math.round(value).toLocaleString("zh-TW")} 元` : "金額未揭露";
+    const shortMoney = (value) => {
+      if (!value) return "待補";
+      if (value >= 100000000) return `${Math.round(value / 100000000).toLocaleString("zh-TW")} 億`;
+      return `${Math.round(value / 10000).toLocaleString("zh-TW")} 萬`;
+    };
     const escapeHtml = (value) => text(value)
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt;")
@@ -718,27 +752,56 @@
     function renderAnswer(question) {
       const total = state.filtered.reduce((sum, f) => sum + amount(f.properties), 0);
       const ministries = new Set(state.filtered.map((f) => text(f.properties.ministry)).filter(Boolean));
+      const special = state.budget && state.budget.special_budget;
+      document.getElementById("metricSpecialTotal").textContent = special ? shortMoney(special.approved_amount) : "待補";
       document.getElementById("metricTotal").textContent = total ? `${Math.round(total / 10000).toLocaleString("zh-TW")} 萬` : "待補";
-      document.getElementById("metricMinistries").textContent = ministries.size;
       document.getElementById("metricPlans").textContent = state.filtered.length;
 
       const countWithAmount = state.filtered.filter((f) => amount(f.properties) > 0).length;
+      const budgetIntro = special ? `
+        <strong>回答：</strong>馬太鞍災後重建特別預算目前以中央總盤
+        <strong>${escapeHtml(shortMoney(special.approved_amount))}</strong>呈現，特別條例經費上限為
+        <strong>${escapeHtml(shortMoney(special.cap_amount))}</strong>，其中
+        <strong>${escapeHtml(shortMoney(special.reserved_amount))}</strong>保留後續視需求編列，執行期間為 ${escapeHtml(special.period)}。
+      ` : `
+        <strong>回答：</strong>特別預算總盤資料尚未載入，以下先顯示已空間化的計畫 metadata。
+      `;
       document.getElementById("answerText").innerHTML = `
-        <strong>回答：</strong>依目前整理的公開 metadata 與待佐證資料，馬太鞍相關計畫可計金額合計為
-        <strong>${escapeHtml(money(total))}</strong>，涵蓋 ${ministries.size} 個部會或機關、${state.filtered.length} 筆計畫。
-        其中 ${countWithAmount} 筆已有金額欄位，其餘仍需回查公開採購公告或正式預算來源。
+        ${budgetIntro}
+        <br><br>
+        <strong>GIS 已整理計畫：</strong>目前已空間化 ${state.filtered.length} 筆計畫，已填金額者 ${countWithAmount} 筆，
+        GIS metadata 可計金額為 <strong>${escapeHtml(money(total))}</strong>。這是「已整理到地圖的計畫金額」，不等於270億元總預算。
         <br><br>
         <strong>如何看位置：</strong>每筆計畫都有代表點位；點選「計畫清單」中的卡片，右側 WebGIS 會定位到該計畫範圍的代表位置。
       `;
 
-      document.getElementById("ministryTotals").innerHTML = groupSum(state.filtered, "ministry")
+      document.getElementById("trackingCards").innerHTML = state.budget
+        ? state.budget.tracking_questions.map((item) => `
+          <article class="track-card">
+            <h4>${escapeHtml(item.topic)} <span class="tag">${escapeHtml(item.status)}</span></h4>
+            <p>${escapeHtml(item.answer)}</p>
+          </article>
+        `).join("")
+        : "";
+
+      const allocationCards = state.budget
+        ? state.budget.ministry_allocations.map((item) => `
+          <div class="result-card" data-ministry="${escapeHtml(item.agency)}">
+            <h4>${escapeHtml(item.agency)}</h4>
+            <p><span class="tag money">${escapeHtml(shortMoney(item.amount))}</span></p>
+            <p class="meta">${escapeHtml(item.scope)}</p>
+          </div>
+        `).join("")
+        : "";
+      const gisCards = groupSum(state.filtered, "ministry")
         .map(([ministry, sum]) => `
           <div class="result-card" data-ministry="${escapeHtml(ministry)}">
-            <h4>${escapeHtml(ministry)}</h4>
+            <h4>GIS metadata：${escapeHtml(ministry)}</h4>
             <p><span class="tag money">${escapeHtml(money(sum))}</span></p>
-            <p class="meta">包含 ${state.filtered.filter((f) => text(f.properties.ministry) === ministry).length} 筆計畫；未揭露金額者未納入合計。</p>
+            <p class="meta">包含 ${state.filtered.filter((f) => text(f.properties.ministry) === ministry).length} 筆空間化計畫；未揭露金額者未納入合計。</p>
           </div>
         `).join("");
+      document.getElementById("ministryTotals").innerHTML = allocationCards + gisCards;
     }
 
     function renderPlans() {
@@ -782,7 +845,13 @@
             ${link}
           </article>
         `;
-      }).join("");
+      }).join("") + (state.budget ? state.budget.sources.map((source) => `
+        <article class="source-card">
+          <h4>${escapeHtml(source.title)}</h4>
+          <p class="meta">日期：${escapeHtml(source.date)}｜公開來源：總預算、部會分配與地方執行摘要</p>
+          <p><a href="${escapeHtml(source.url)}" target="_blank" rel="noreferrer">開啟來源</a></p>
+        </article>
+      `).join("") : "");
     }
 
     function renderTable() {
@@ -872,6 +941,8 @@
     async function init() {
       const response = await fetch("sample_output/resource_items.geojson");
       const geojson = await response.json();
+      const budgetResponse = await fetch("sample_output/budget_overview.json");
+      state.budget = await budgetResponse.json();
       state.features = geojson.features || [];
       fillSelect("ministryFilter", unique("ministry"));
       fillSelect("workFilter", unique("work_category"));
