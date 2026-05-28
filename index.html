@@ -26,6 +26,10 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       background: var(--bg);
@@ -35,12 +39,21 @@
     }
 
     header {
+      min-height: 86vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       background:
-        linear-gradient(90deg, rgba(251, 252, 248, 0.96), rgba(251, 252, 248, 0.78)),
-        radial-gradient(circle at 78% 12%, rgba(15, 107, 82, 0.18), transparent 34%),
+        linear-gradient(90deg, rgba(246, 250, 244, 0.96) 0%, rgba(246, 250, 244, 0.86) 42%, rgba(246, 250, 244, 0.36) 100%),
+        linear-gradient(0deg, rgba(238, 244, 238, 0.95), rgba(238, 244, 238, 0.12) 38%),
+        url("assets/hero-landslide-valley.png") center right / cover no-repeat,
         var(--paper);
       border-bottom: 1px solid var(--line);
-      padding: 22px 28px 18px;
+      padding: 28px;
+    }
+
+    .hero-inner {
+      max-width: 920px;
     }
 
     .eyebrow {
@@ -66,7 +79,85 @@
       font-size: 16px;
     }
 
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .hero-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      border-radius: 6px;
+      padding: 0 18px;
+      background: var(--brand);
+      color: white;
+      font-weight: 850;
+      text-decoration: none;
+      border: 1px solid var(--brand);
+    }
+
+    .hero-actions a.secondary {
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ink);
+      border-color: rgba(18, 48, 43, 0.18);
+      backdrop-filter: blur(5px);
+    }
+
+    .hero-card {
+      margin-top: 28px;
+      display: inline-block;
+      max-width: 720px;
+      border: 1px solid rgba(18, 48, 43, 0.12);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.74);
+      padding: 12px 14px;
+      color: var(--muted);
+      backdrop-filter: blur(6px);
+    }
+
+    .capability-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px 18px 0;
+    }
+
+    .capability {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .capability span {
+      display: block;
+      color: var(--brand);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .capability strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .capability p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     main {
+      scroll-margin-top: 12px;
       padding: 18px;
       display: grid;
       grid-template-columns: minmax(460px, 0.95fr) minmax(420px, 1.05fr);
@@ -387,6 +478,10 @@
     }
 
     @media (max-width: 1100px) {
+      .capability-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       main {
         grid-template-columns: 1fr;
       }
@@ -402,6 +497,16 @@
     }
 
     @media (max-width: 720px) {
+      header {
+        min-height: 82vh;
+        padding: 22px 16px;
+        background-position: center;
+      }
+
+      .capability-strip {
+        grid-template-columns: 1fr;
+      }
+
       main {
         padding: 10px;
       }
@@ -416,12 +521,42 @@
 </head>
 <body>
   <header>
-    <div class="eyebrow">MATAIAN GOVERNANCE DECISION PLATFORM</div>
-    <h1>馬太鞍公部門資源 RAG 搜尋與 WebGIS</h1>
-    <p>以對話查詢為入口，盤點政府在馬太鞍溪堰塞湖事件中的預算、部會、計畫、工作範圍與資料來源，並同步定位到地圖。</p>
+    <div class="hero-inner">
+      <div class="eyebrow">MATAIAN GOVERNANCE DECISION PLATFORM</div>
+      <h1>馬太鞍公部門資源 RAG 搜尋與 WebGIS</h1>
+      <p>面向災後重建、跨部會協調與公共監督的空間化治理入口。以對話查詢盤點政府預算、部會計畫、工作範圍與資料來源，並同步定位到 WebGIS。</p>
+      <div class="hero-actions">
+        <a href="#system">進入系統</a>
+        <a href="#capabilities" class="secondary">查看平台能力</a>
+      </div>
+      <div class="hero-card">底圖為專案生成示意影像，用於呈現馬太鞍溪堰塞湖災後地形與河谷治理情境；正式資料以右側 WebGIS 與來源證據為準。</div>
+    </div>
   </header>
 
-  <main>
+  <section id="capabilities" class="capability-strip" aria-label="平台核心能力">
+    <div class="capability">
+      <span>Core</span>
+      <strong>對話式治理查詢</strong>
+      <p>以自然語言詢問「花多少、誰在做、做在哪裡」。</p>
+    </div>
+    <div class="capability">
+      <span>WebGIS</span>
+      <strong>計畫範圍定位</strong>
+      <p>將部會計畫、工項與代表位置同步呈現在地圖上。</p>
+    </div>
+    <div class="capability">
+      <span>Evidence</span>
+      <strong>來源可追溯</strong>
+      <p>每個回答保留來源、日期、公開狀態與審核備註。</p>
+    </div>
+    <div class="capability">
+      <span>Governance</span>
+      <strong>跨部會盤點</strong>
+      <p>彙整農業部、水利署、工程會等重建與防災投入。</p>
+    </div>
+  </section>
+
+  <main id="system">
     <section class="panel chat-panel">
       <div class="chat-box">
         <div class="chat-label">對話式查詢</div>
