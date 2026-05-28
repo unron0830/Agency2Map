@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agency2Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIINfQxv7VSaDD8XdbJ5GN0F0Xw0D1B8fFA=" crossorigin="">
+  <style>
+    :root {
+      --bg: #f7f8fb;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d8dee9;
+      --brand: #116a7b;
+      --brand-dark: #0b4f5f;
+      --accent: #d97706;
+      --good: #15803d;
+      --mid: #b45309;
+      --low: #b91c1c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      padding: 18px 24px 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      max-width: 980px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 16px;
+      padding: 16px;
+    }
+
+    aside,
+    section,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    aside {
+      padding: 16px;
+      align-self: start;
+      position: sticky;
+      top: 12px;
+    }
+
+    h2,
+    h3 {
+      margin: 0 0 12px;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      font-size: 18px;
+    }
+
+    h3 {
+      font-size: 16px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    select,
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 10px;
+      font: inherit;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: var(--brand);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--brand-dark);
+    }
+
+    .content {
+      display: grid;
+      grid-template-rows: auto auto;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 76px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: 16px;
+    }
+
+    #map {
+      height: 560px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    .panel {
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .qa-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .answer {
+      border-left: 4px solid var(--brand);
+      background: #f1fafb;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .source-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0;
+      background: #fff;
+    }
+
+    .source-card h4 {
+      margin: 0 0 6px;
+      font-size: 15px;
+    }
+
+    .source-card p {
+      margin: 6px 0;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef2f7;
+      margin-right: 4px;
+    }
+
+    .tag.good {
+      background: #dcfce7;
+      color: var(--good);
+    }
+
+    .tag.mid {
+      background: #fef3c7;
+      color: var(--mid);
+    }
+
+    .tag.low {
+      background: #fee2e2;
+      color: var(--low);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--panel);
+      min-width: 920px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      background: #eef2f7;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    a {
+      color: var(--brand-dark);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 12px 0;
+    }
+
+    @media (max-width: 980px) {
+      main,
+      .grid,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      #map {
+        height: 440px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Agency2Map</h1>
+    <p>跨部會資源投入追蹤與空間化治理元件。以 WebGIS 呈現計畫位置，並在提問回答中同步顯示資料來源、日期、證據與穩定性。</p>
+  </header>
+
+  <main>
+    <aside>
+      <h2>篩選</h2>
+      <label for="townFilter">行政區</label>
+      <select id="townFilter"></select>
+
+      <label for="ministryFilter">部會</label>
+      <select id="ministryFilter"></select>
+
+      <label for="workFilter">工作類型</label>
+      <select id="workFilter"></select>
+
+      <label for="stabilityFilter">資料穩定性</label>
+      <select id="stabilityFilter"></select>
+    </aside>
+
+    <div class="content">
+      <div>
+        <div class="metrics">
+          <div class="metric"><span>資源項目</span><strong id="metricItems">0</strong></div>
+          <div class="metric"><span>部會數</span><strong id="metricMinistries">0</strong></div>
+          <div class="metric"><span>工作類型</span><strong id="metricWork">0</strong></div>
+          <div class="metric"><span>待確認</span><strong id="metricPending">0</strong></div>
+        </div>
+
+        <div class="grid">
+          <section class="panel">
+            <h2>WebGIS</h2>
+            <div id="map"></div>
+          </section>
+
+          <section class="panel">
+            <h2>提問</h2>
+            <div class="qa-row">
+              <input id="questionInput" type="search" placeholder="例如：光復鄉有哪些計畫？林保署做了什麼？哪些資料缺金額？">
+              <button id="askButton" type="button">回答</button>
+            </div>
+            <div id="answerBox" class="answer">請輸入問題；回答會附上資料來源。</div>
+            <h3>資料來源</h3>
+            <div id="sourcesBox" class="empty">尚未提問。</div>
+          </section>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h2>資源表格</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>部會</th>
+                <th>次級機關</th>
+                <th>計畫名稱</th>
+                <th>工作類型</th>
+                <th>地點</th>
+                <th>狀態</th>
+                <th>穩定性</th>
+                <th>來源</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const state = {
+      features: [],
+      filtered: [],
+      markers: L.layerGroup(),
+    };
+
+    const map = L.map("map").setView([23.666, 121.421], 10);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+    state.markers.addTo(map);
+
+    function text(value) {
+      return value === undefined || value === null || value === "nan" ? "" : String(value);
+    }
+
+    function uniqueValues(features, field) {
+      const values = [...new Set(features.map((feature) => text(feature.properties[field])).filter(Boolean))];
+      return ["全部", ...values.sort((a, b) => a.localeCompare(b, "zh-Hant"))];
+    }
+
+    function fillSelect(id, values) {
+      const select = document.getElementById(id);
+      select.innerHTML = values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+    }
+
+    function escapeHtml(value) {
+      return text(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function stabilityClass(value) {
+      const score = Number(value || 0);
+      if (score >= 8) return "good";
+      if (score >= 5) return "mid";
+      return "low";
+    }
+
+    function passesFilter(feature, field, selectId) {
+      const value = document.getElementById(selectId).value;
+      return value === "全部" || text(feature.properties[field]) === value;
+    }
+
+    function applyFilters() {
+      state.filtered = state.features.filter((feature) =>
+        passesFilter(feature, "admin_town", "townFilter")
+        && passesFilter(feature, "ministry", "ministryFilter")
+        && passesFilter(feature, "work_category", "workFilter")
+        && passesFilter(feature, "stability_label", "stabilityFilter")
+      );
+      renderMetrics();
+      renderMap();
+      renderTable();
+    }
+
+    function renderMetrics() {
+      document.getElementById("metricItems").textContent = state.filtered.length;
+      document.getElementById("metricMinistries").textContent = new Set(state.filtered.map((f) => text(f.properties.ministry)).filter(Boolean)).size;
+      document.getElementById("metricWork").textContent = new Set(state.filtered.map((f) => text(f.properties.work_category)).filter(Boolean)).size;
+      document.getElementById("metricPending").textContent = state.filtered.filter((f) => text(f.properties.status) === "待確認").length;
+    }
+
+    function renderMap() {
+      state.markers.clearLayers();
+      const bounds = [];
+
+      state.filtered.forEach((feature) => {
+        const coordinates = feature.geometry && feature.geometry.coordinates;
+        if (!coordinates || coordinates.length < 2) return;
+        const [lng, lat] = coordinates;
+        bounds.push([lat, lng]);
+        const p = feature.properties;
+        const popup = `
+          <strong>${escapeHtml(p.program_name)}</strong><br>
+          部會：${escapeHtml(p.ministry)}<br>
+          類型：${escapeHtml(p.work_category)}<br>
+          地點：${escapeHtml(p.location_text)}<br>
+          狀態：${escapeHtml(p.status)}<br>
+          穩定性：${escapeHtml(p.stability_score)}<br>
+          證據：${escapeHtml(p.evidence_text)}
+        `;
+        L.circleMarker([lat, lng], {
+          radius: 8,
+          color: "#116a7b",
+          fillColor: "#d97706",
+          fillOpacity: 0.8,
+          weight: 2,
+        }).bindPopup(popup).addTo(state.markers);
+      });
+
+      if (bounds.length) {
+        map.fitBounds(bounds, { padding: [32, 32], maxZoom: 11 });
+      }
+    }
+
+    function renderTable() {
+      const body = document.getElementById("tableBody");
+      body.innerHTML = state.filtered.map((feature) => {
+        const p = feature.properties;
+        const source = p.source_url
+          ? `<a href="${escapeHtml(p.source_url)}" target="_blank" rel="noreferrer">${escapeHtml(p.source_title || p.source_id)}</a>`
+          : escapeHtml(p.source_title || p.source_id);
+        return `
+          <tr>
+            <td>${escapeHtml(p.ministry)}</td>
+            <td>${escapeHtml(p.sub_agency)}</td>
+            <td>${escapeHtml(p.program_name)}</td>
+            <td>${escapeHtml(p.work_category)}</td>
+            <td>${escapeHtml(p.location_text)}</td>
+            <td>${escapeHtml(p.status)}</td>
+            <td><span class="tag ${stabilityClass(p.stability_score)}">${escapeHtml(p.stability_score || "")}</span>${escapeHtml(p.stability_label || "")}</td>
+            <td>${source}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function tokenize(question) {
+      const matches = question.match(/[\w\u4e00-\u9fff]+/g) || [];
+      return matches.filter((term) => term.length >= 2);
+    }
+
+    function rowText(properties) {
+      return [
+        "ministry",
+        "sub_agency",
+        "program_name",
+        "work_category",
+        "resource_type",
+        "location_text",
+        "admin_county",
+        "admin_town",
+        "river_basin",
+        "river_name",
+        "river_segment",
+        "spatial_role",
+        "status",
+        "source_title",
+        "evidence_text",
+      ].map((field) => text(properties[field])).join(" ");
+    }
+
+    function ask() {
+      const question = document.getElementById("questionInput").value.trim();
+      if (!question) {
+        document.getElementById("answerBox").textContent = "請輸入問題；回答會附上資料來源。";
+        document.getElementById("sourcesBox").textContent = "尚未提問。";
+        return;
+      }
+
+      const terms = tokenize(question);
+      const matches = state.filtered
+        .map((feature) => {
+          const haystack = rowText(feature.properties);
+          const score = terms.reduce((sum, term) => sum + (haystack.includes(term) ? 1 : 0), 0);
+          return { feature, score };
+        })
+        .filter((item) => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5)
+        .map((item) => item.feature);
+
+      renderAnswer(matches);
+      renderSources(matches);
+    }
+
+    function renderAnswer(matches) {
+      const box = document.getElementById("answerBox");
+      if (!matches.length) {
+        box.textContent = "目前資料表中找不到足夠依據回答這個問題。請補充公開標案網址或整理更多來源資料。";
+        return;
+      }
+
+      box.innerHTML = matches.map((feature) => {
+        const p = feature.properties;
+        const amount = text(p.amount);
+        const amountText = amount && amount !== "0" ? `${escapeHtml(amount)} ${escapeHtml(p.amount_unit)}` : "金額未揭露";
+        return `<p><strong>${escapeHtml(p.ministry)}／${escapeHtml(p.sub_agency)}</strong>：${escapeHtml(p.program_name)}，工作類型為 ${escapeHtml(p.work_category)}，位置為 ${escapeHtml(p.location_text)}，狀態為 ${escapeHtml(p.status)}，${amountText}。</p>`;
+      }).join("");
+    }
+
+    function renderSources(matches) {
+      const box = document.getElementById("sourcesBox");
+      if (!matches.length) {
+        box.innerHTML = `<div class="empty">沒有可引用來源。</div>`;
+        return;
+      }
+
+      box.innerHTML = matches.map((feature) => {
+        const p = feature.properties;
+        const link = p.source_url
+          ? `<p><a href="${escapeHtml(p.source_url)}" target="_blank" rel="noreferrer">開啟來源</a></p>`
+          : "";
+        return `
+          <article class="source-card">
+            <h4>${escapeHtml(p.source_title || p.source_id)}</h4>
+            <p>${escapeHtml(p.evidence_text)}</p>
+            <p class="meta">
+              來源 ID：${escapeHtml(p.source_id)}
+              ｜日期：${escapeHtml(p.source_date)}
+              ｜穩定性：${escapeHtml(p.stability_score)}
+              ｜信心：${escapeHtml(p.confidence)}
+              ｜人工確認：${escapeHtml(p.reviewed)}
+            </p>
+            ${link}
+          </article>
+        `;
+      }).join("");
+    }
+
+    async function init() {
+      const response = await fetch("sample_output/resource_items.geojson");
+      const geojson = await response.json();
+      state.features = geojson.features || [];
+
+      fillSelect("townFilter", uniqueValues(state.features, "admin_town"));
+      fillSelect("ministryFilter", uniqueValues(state.features, "ministry"));
+      fillSelect("workFilter", uniqueValues(state.features, "work_category"));
+      fillSelect("stabilityFilter", uniqueValues(state.features, "stability_label"));
+
+      ["townFilter", "ministryFilter", "workFilter", "stabilityFilter"].forEach((id) => {
+        document.getElementById(id).addEventListener("change", applyFilters);
+      });
+      document.getElementById("askButton").addEventListener("click", ask);
+      document.getElementById("questionInput").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") ask();
+      });
+
+      applyFilters();
+    }
+
+    init().catch((error) => {
+      document.getElementById("answerBox").textContent = `資料載入失敗：${error.message}`;
+    });
+  </script>
+</body>
+</html>
