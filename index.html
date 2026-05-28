@@ -763,6 +763,8 @@
         <strong>${escapeHtml(shortMoney(special.approved_amount))}</strong>呈現，特別條例經費上限為
         <strong>${escapeHtml(shortMoney(special.cap_amount))}</strong>，其中
         <strong>${escapeHtml(shortMoney(special.reserved_amount))}</strong>保留後續視需求編列，執行期間為 ${escapeHtml(special.period)}。
+        <br>
+        <strong>公告來源：</strong><a href="${escapeHtml(special.announcement_url)}" target="_blank" rel="noreferrer">${escapeHtml(special.announcement_title)}</a>（${escapeHtml(special.announcement_date)}）。
       ` : `
         <strong>回答：</strong>特別預算總盤資料尚未載入，以下先顯示已空間化的計畫 metadata。
       `;

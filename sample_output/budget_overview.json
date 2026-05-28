@@ -6,7 +6,10 @@
     "cap_amount": 30000000000,
     "reserved_amount": 3000000000,
     "period": "114-119年度",
-    "note": "中央政府花蓮馬太鞍溪堰塞湖災後重建特別預算歲出270億元；特別條例經費上限300億元，其餘30億元後續視需求編列。"
+    "announcement_title": "中央政府花蓮馬太鞍溪堰塞湖災後重建特別預算案立法院審議結果",
+    "announcement_url": "https://www.dgbas.gov.tw/News_Content.aspx?n=3602&s=235537",
+    "announcement_date": "2025-12-02",
+    "note": "行政院主計總處公告立法院審議結果，歲出270億元照列；特別條例經費上限300億元，其餘30億元後續視需求編列。"
   },
   "ministry_allocations": [
     {
@@ -94,6 +97,11 @@
       "title": "行政院主計總處：中央政府花蓮馬太鞍溪堰塞湖災後重建特別預算案立法院審議結果",
       "url": "https://www.dgbas.gov.tw/News_Content.aspx?n=3602&s=235537",
       "date": "2025-12-02"
+    },
+    {
+      "title": "行政院：通過中央政府花蓮馬太鞍溪堰塞湖災後重建特別預算案",
+      "url": "https://www.ey.gov.tw/Page/9277F759E41CCD91/cf3959dc-1a7b-41a8-9b2c-5a474960bfb9",
+      "date": "2025-11-13"
     },
     {
       "title": "行政院主計總處：中央政府花蓮馬太鞍溪堰塞湖災後重建特別預算案",
