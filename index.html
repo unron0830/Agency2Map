@@ -593,6 +593,7 @@
         <div class="prompt-buttons">
           <button type="button" data-prompt="馬太鞍特別預算總共有多少">特別預算總額</button>
           <button type="button" data-prompt="消防局、衛生所、農業部輔導有沒有相關預算">消防/衛生/農業</button>
+          <button type="button" data-prompt="各部會執行情況會不會重工，國家的錢拿去哪裡了">錢去哪裡？</button>
           <button type="button" data-prompt="各部會目前有哪些計畫">各部會計畫</button>
           <button type="button" data-prompt="光復鄉有哪些工作範圍">光復鄉範圍</button>
         </div>
@@ -629,6 +630,8 @@
         </div>
         <h3>重點追蹤項目</h3>
         <div id="trackingCards" class="track-grid"></div>
+        <h3>錢流向與重工檢核</h3>
+        <div id="governanceCards"></div>
         <h3>各部會金額</h3>
         <div id="ministryTotals"></div>
       </div>
@@ -781,6 +784,9 @@
         <strong>GIS 已整理計畫：</strong>目前已空間化 ${state.filtered.length} 筆計畫，已填金額者 ${countWithAmount} 筆，
         GIS metadata 可計金額為 <strong>${escapeHtml(money(total))}</strong>。這是「已整理到地圖的計畫金額」，不等於270億元總預算。
         <br><br>
+        <strong>治理判讀：</strong>本平台要追的是「預算編列 → 部會計畫 → 執行機關/地方受補助單位 → 採購或補助案 → GIS位置與成果 → 執行率」。
+        判斷是否重工時，會比對同一地點、同一工項、同一成果、同一受補助對象與施作時序。
+        <br><br>
         <strong>如何看位置：</strong>每筆計畫都有代表點位；點選「計畫清單」中的卡片，右側 WebGIS 會定位到該計畫範圍的代表位置。
       `;
 
@@ -791,6 +797,20 @@
             <p>${escapeHtml(item.answer)}</p>
           </article>
         `).join("")
+        : "";
+
+      document.getElementById("governanceCards").innerHTML = state.budget && state.budget.governance_focus
+        ? `
+          <article class="source-card">
+            <h4>錢去哪裡了</h4>
+            <p>${state.budget.governance_focus.money_flow_method.map((item) => escapeHtml(item)).join("<br>")}</p>
+          </article>
+          <article class="source-card">
+            <h4>會不會重工</h4>
+            <p>${state.budget.governance_focus.overlap_check_method.map((item) => escapeHtml(item)).join("<br>")}</p>
+            <p class="meta">${escapeHtml(state.budget.governance_focus.current_limit)}</p>
+          </article>
+        `
         : "";
 
       const allocationCards = state.budget
