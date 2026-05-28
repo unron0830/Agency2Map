@@ -8,3 +8,5 @@ data/private_docs/*
 !data/private_docs/README.md
 data/local_index/*
 !data/local_index/README.md
+data/public_tenders/*
+!data/public_tenders/README.md
