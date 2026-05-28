@@ -771,6 +771,13 @@
       document.getElementById("answerText").innerHTML = `
         ${budgetIntro}
         <br><br>
+        ${state.budget && state.budget.execution_status ? `
+          <strong>執行率追蹤：</strong>工程會專區另提供「${escapeHtml(state.budget.execution_status.metric_name)}」，
+          目前紀錄為累計執行數 ${escapeHtml(Number(state.budget.execution_status.executed_amount).toLocaleString("zh-TW"))}${escapeHtml(state.budget.execution_status.executed_amount_unit)}
+          、整體達成率 ${escapeHtml(Number(state.budget.execution_status.execution_rate).toFixed(2))}%（${escapeHtml(state.budget.execution_status.as_of)}）。
+          這是預算執行口徑，應和預算編列數分開看。
+          <br><br>
+        ` : ""}
         <strong>GIS 已整理計畫：</strong>目前已空間化 ${state.filtered.length} 筆計畫，已填金額者 ${countWithAmount} 筆，
         GIS metadata 可計金額為 <strong>${escapeHtml(money(total))}</strong>。這是「已整理到地圖的計畫金額」，不等於270億元總預算。
         <br><br>
