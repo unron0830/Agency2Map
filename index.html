@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agency2Map - 跨部會資源投入追蹤與空間化治理元件</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIINfQxv7VSaDD8XdbJ5GN0F0Xw0D1B8fFA=" crossorigin="">
   <style>
     :root {
       --bg: #eef4ee;
@@ -159,9 +157,7 @@
     main {
       scroll-margin-top: 12px;
       padding: 18px;
-      display: grid;
-      grid-template-columns: minmax(460px, 0.95fr) minmax(420px, 1.05fr);
-      gap: 18px;
+      display: block;
       align-items: start;
     }
 
@@ -175,6 +171,8 @@
 
     .chat-panel {
       padding: 18px;
+      max-width: 1180px;
+      margin: 0 auto;
     }
 
     .map-panel {
@@ -549,13 +547,13 @@
   <header>
     <div class="hero-inner">
       <div class="eyebrow">MATAIAN GOVERNANCE DECISION PLATFORM</div>
-      <h1>跨部會資源投入追蹤與空間化治理元件</h1>
-      <p>以馬太鞍溪堰塞湖災後重建為示範場域，把特別預算、部會計畫、地方執行、公開來源與 GIS 位置串成可查詢、可追溯、可監督的治理介面。</p>
+      <h1>跨部會資源投入追蹤與 RAG 自動回覆元件</h1>
+      <p>以馬太鞍溪堰塞湖災後重建為示範場域，把特別預算、部會計畫、地方執行與公開來源串成可查詢、可追溯、可監督的 RAG 回答介面。</p>
       <div class="hero-actions">
         <a href="#system">進入系統</a>
         <a href="#capabilities" class="secondary">查看平台能力</a>
       </div>
-      <div class="hero-card">底圖為專案生成示意影像，用於呈現馬太鞍溪堰塞湖災後地形與河谷治理情境；正式資料以右側 WebGIS 與來源證據為準。</div>
+      <div class="hero-card">底圖為專案生成示意影像，用於呈現馬太鞍溪堰塞湖災後地形與河谷治理情境；正式回答以 RAG 摘要、法規依據與來源證據為準。</div>
     </div>
   </header>
 
@@ -566,9 +564,9 @@
       <p>以自然語言詢問「花多少、哪個部會、哪些地方執行」。</p>
     </div>
     <div class="capability">
-      <span>WebGIS</span>
-      <strong>計畫範圍定位</strong>
-      <p>將部會計畫、工項與代表位置同步呈現在地圖上。</p>
+      <span>RAG</span>
+      <strong>自動回覆成果</strong>
+      <p>把法規、預算、部會分工與公開來源整理成可追溯回答。</p>
     </div>
     <div class="capability">
       <span>Evidence</span>
@@ -625,8 +623,8 @@
         <div id="answerText" class="answer-block">系統正在載入資料。</div>
         <div class="summary-grid">
           <div class="metric"><span>特別預算歲出</span><strong id="metricSpecialTotal">0</strong><small>中央總盤</small></div>
-          <div class="metric"><span>GIS已整理金額</span><strong id="metricTotal">0</strong><small>不與總預算重複加總</small></div>
-          <div class="metric"><span>空間化計畫數</span><strong id="metricPlans">0</strong><small>可點選定位</small></div>
+          <div class="metric"><span>RAG已整理金額</span><strong id="metricTotal">0</strong><small>不與總預算重複加總</small></div>
+          <div class="metric"><span>已整理計畫數</span><strong id="metricPlans">0</strong><small>可追來源</small></div>
         </div>
         <h3>重點追蹤項目</h3>
         <div id="trackingCards" class="track-grid"></div>
@@ -668,36 +666,28 @@
         </div>
       </div>
     </section>
-
-    <section class="panel map-panel">
-      <div class="map-header">
-        <div>
-          <h2>WebGIS 位置說明</h2>
-          <div class="map-note" id="mapNote">點選左側計畫卡片，地圖會定位到該計畫代表位置。</div>
-        </div>
-      </div>
-      <div id="map"></div>
-    </section>
   </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     const state = {
       features: [],
       filtered: [],
       markers: new Map(),
-      layer: L.layerGroup(),
+      layer: null,
       selectedId: null,
       budget: null,
     };
 
-    const map = L.map("map").setView([23.67, 121.44], 10);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: "&copy; OpenStreetMap contributors",
-    }).addTo(map);
-    state.layer.addTo(map);
+    const mapElement = document.getElementById("map");
+    const map = mapElement && window.L ? L.map("map").setView([23.67, 121.44], 10) : null;
+    if (map) {
+      state.layer = L.layerGroup();
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+      state.layer.addTo(map);
+    }
 
     const text = (value) => value === undefined || value === null || value === "nan" ? "" : String(value);
     const amount = (p) => Number(text(p.amount).replaceAll(",", "")) || 0;
@@ -789,13 +779,13 @@
           這是預算執行口徑，應和預算編列數分開看。
           <br><br>
         ` : ""}
-        <strong>GIS 已整理計畫：</strong>目前已空間化 ${state.filtered.length} 筆計畫，已填金額者 ${countWithAmount} 筆，
-        GIS metadata 可計金額為 <strong>${escapeHtml(money(total))}</strong>。這是「已整理到地圖的計畫金額」，不等於270億元總預算。
+        <strong>RAG 已整理計畫：</strong>目前已整理 ${state.filtered.length} 筆計畫 metadata，已填金額者 ${countWithAmount} 筆，
+        RAG metadata 可計金額為 <strong>${escapeHtml(money(total))}</strong>。這是「已整理進回答索引的計畫金額」，不等於270億元總預算。
         <br><br>
-        <strong>治理判讀：</strong>本平台要追的是「預算編列 → 部會計畫 → 執行機關/地方受補助單位 → 採購或補助案 → GIS位置與成果 → 執行率」。
+        <strong>治理判讀：</strong>本平台要追的是「預算編列 → 部會計畫 → 執行機關/地方受補助單位 → 採購或補助案 → 工作範圍與成果 → 執行率」。
         判斷是否重工時，會比對同一地點、同一工項、同一成果、同一受補助對象與施作時序。
         <br><br>
-        <strong>如何看位置：</strong>每筆計畫都有代表點位；點選「計畫清單」中的卡片，右側 WebGIS 會定位到該計畫範圍的代表位置。
+        <strong>如何看成果：</strong>先以回答成果、主要法規依據、重點追蹤項目與資料來源為主；圖台定位之後再接回輔助展示。
       `;
 
       document.getElementById("trackingCards").innerHTML = state.budget
@@ -843,9 +833,9 @@
       const gisCards = groupSum(state.filtered, "ministry")
         .map(([ministry, sum]) => `
           <div class="result-card" data-ministry="${escapeHtml(ministry)}">
-            <h4>GIS metadata：${escapeHtml(ministry)}</h4>
+            <h4>RAG metadata：${escapeHtml(ministry)}</h4>
             <p><span class="tag money">${escapeHtml(money(sum))}</span></p>
-            <p class="meta">包含 ${state.filtered.filter((f) => text(f.properties.ministry) === ministry).length} 筆空間化計畫；未揭露金額者未納入合計。</p>
+            <p class="meta">包含 ${state.filtered.filter((f) => text(f.properties.ministry) === ministry).length} 筆已整理計畫；未揭露金額者未納入合計。</p>
           </div>
         `).join("");
       document.getElementById("ministryTotals").innerHTML = allocationCards + gisCards;
@@ -919,6 +909,7 @@
     }
 
     function renderMap() {
+      if (!map) return;
       state.layer.clearLayers();
       state.markers.clear();
       const bounds = [];
@@ -967,7 +958,7 @@
         marker.openPopup();
       }
       const feature = state.filtered.find((f) => f.properties.id === id);
-      if (feature) {
+      if (feature && document.getElementById("mapNote")) {
         document.getElementById("mapNote").textContent = `目前定位：${feature.properties.program_name}｜${feature.properties.location_text}`;
       }
     }
